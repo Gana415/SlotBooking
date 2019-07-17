@@ -1,5 +1,9 @@
 package com.slot.serviceImpl;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.slot.bean.CarParking;
 import com.slot.bean.Vehicle;
 import com.slot.service.VehicleService;
@@ -35,7 +39,7 @@ public class VehicleServiceImpl implements VehicleService {
 			lineBreak();
 			return false;
 		}
-		
+
 	}
 
 	private CarParking setCarParking(String regNumber, String colour, int index) {
@@ -84,56 +88,53 @@ public class VehicleServiceImpl implements VehicleService {
 
 	public void status() {
 		System.out.println("Slot No.     " + "Registration No   " + "Colour");
-		for (int i = 0; i < slotArray.length; i++) {
-			if (slotArray[i] != null) {
-				CarParking car = slotArray[i];
-				Vehicle vechical = car.getVehicle();
-				System.out.print(car.getSlotId() + 1 + "            ");
-				System.out.print(vechical.getRegNumber() + "   ");
-				System.out.print(vechical.getColour());
-				lineBreak();
-			}
+		List<CarParking> listObj = findAll();
+
+		for (CarParking car : listObj) {
+			System.out.print(car.getSlotId() + 1 + "            ");
+			System.out.print(car.getVehicle().getRegNumber() + "   ");
+			System.out.print(car.getVehicle().getColour());
+			lineBreak();
 		}
 		lineBreak();
 	}
 
 	public void findRegNumbersSlots(String colour, String type) {
 		String print = "";
-		for (int i = 0; i < slotArray.length; i++) {
-			if (slotArray[i] != null) {
-				CarParking car = slotArray[i];
-				Vehicle vechical = car.getVehicle();
-				if (vechical.getColour().equalsIgnoreCase(colour)) {
-					if (type.equalsIgnoreCase(SlotEnumFields.REGISTRATION.getStatus())) {
-						print += vechical.getRegNumber() + " ,";
-					} else if (type.equalsIgnoreCase(SlotEnumFields.SLOT.getStatus())) {
-						print += (car.getSlotId() + 1) + " ,";
-					}
-				}
-			}
+		List<CarParking> list = findByColour(colour);
+		for (CarParking car : list) {
+			if (type.equalsIgnoreCase(SlotEnumFields.REGISTRATION.getStatus()))
+				print += car.getVehicle().getRegNumber();
+			else if (type.equalsIgnoreCase(SlotEnumFields.SLOT.getStatus()))
+				print += car.getSlotId();
 		}
-
 		System.out.println(!print.equals("") ? print.substring(0, print.length() - 1) : "Colour Not Found!");
 		lineBreak();
 	}
 
-	public void findSlot(String regNumber) {
-		int print = -1;
-		for (int i = 0; i < slotArray.length; i++) {
-			if (slotArray[i] != null) {
-				CarParking car = slotArray[i];
-				Vehicle vechical = car.getVehicle();
-				if (vechical.getRegNumber().equalsIgnoreCase(regNumber)) {
-					print = car.getSlotId();
-				}
+	private List<CarParking> findAll() {
+		List<CarParking> list = Arrays.asList(slotArray).stream().collect(Collectors.toList());
+		return list;
+	}
 
-			}
-		}
-		if (print != -1) {
-			System.out.println(print + 1);
-		} else {
-			System.out.println("Not found");
-		}
+	private List<CarParking> findByColour(String colour) {
+		List<CarParking> list = Arrays.asList(slotArray).stream()
+				.filter(c -> c.getVehicle().getColour().equalsIgnoreCase(colour)).collect(Collectors.toList());
+		return list;
+	}
+
+	private List<CarParking> findByRegNumber(String regNumber) {
+		List<CarParking> list = Arrays.asList(slotArray).stream()
+				.filter(c -> c.getVehicle().getRegNumber().equalsIgnoreCase(regNumber)).collect(Collectors.toList());
+		return list;
+	}
+
+	public void findSlot(String regNumber) {
+		List<CarParking> list = findByRegNumber(regNumber);
+		if (!list.isEmpty())
+			System.out.println(list.get(0).getSlotId() + 1);
+		else
+			System.out.println("Not Found");
 		lineBreak();
 	}
 
