@@ -67,12 +67,12 @@ public class CmdController {
 			System.out.println("Wrong Input!");
 		}
 
-		System.out.println("Enter Color Name ");
+		System.out.println("Enter registration_numbers Color Name ");
 		data = callNewInput();
 		String[] regSlot1 = data.split(" ");
 		obj.findRegNumbersSlots(regSlot1[1], "registration");
 
-		System.out.println("Enter Color Name ");
+		System.out.println("Enter slot_numbers_for_cars Color Name ");
 		data = callNewInput();
 		String[] regSlot2 = data.split(" ");
 		obj.findRegNumbersSlots(regSlot2[1], "slot");

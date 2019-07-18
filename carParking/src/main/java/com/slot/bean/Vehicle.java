@@ -7,6 +7,11 @@ public class Vehicle implements Serializable {
 	private String regNumber;
 	private String colour;
 
+	public Vehicle(String regNumber, String colour) {
+		this.regNumber = regNumber;
+		this.colour = colour;
+	}
+
 	public String getRegNumber() {
 		return regNumber;
 	}
