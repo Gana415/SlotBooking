@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class CarParking implements Serializable {
 	private int slotId;
 	private Vehicle vehicle;
-	
+
 	public CarParking(int slotId, Vehicle vehicle) {
 		this.slotId = slotId;
 		this.vehicle = vehicle;

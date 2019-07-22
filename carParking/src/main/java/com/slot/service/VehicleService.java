@@ -12,7 +12,7 @@ public interface VehicleService {
 
 	public boolean leave(int index);
 
-	public List<CarParking>  status();
+	public List<CarParking> status();
 
 	public String findRegNumbersSlots(String colour, String type);
 

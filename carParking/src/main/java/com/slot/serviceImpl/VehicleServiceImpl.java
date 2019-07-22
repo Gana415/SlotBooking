@@ -23,25 +23,32 @@ public class VehicleServiceImpl implements VehicleService {
 	}
 
 	public boolean park(String regNumber, String colour) {
-		if (!isExistReg(regNumber)) {
-			int index = checkAvailableIndex();
-			if (index != -1) {
-				CarParking obj = setCarParking(regNumber, colour, index);
-				slotArray[index] = obj;
-				System.out.println("Allocated slot number:" + (index + 1));
-				lineBreak();
-				return true;
+		if (slotArray != null) {
+			if (!isExistReg(regNumber)) {
+				int index = checkAvailableIndex();
+				if (index != -1) {
+					CarParking obj = setCarParking(regNumber, colour, index);
+					slotArray[index] = obj;
+					System.out.println("Allocated slot number:" + (index + 1));
+					lineBreak();
+					return true;
+				} else {
+					System.out.println("Sorry, parking lot is full");
+					lineBreak();
+					return false;
+				}
+
 			} else {
-				System.out.println("Sorry, parking lot is full");
+				System.out.println("RegNumber Already Exist");
 				lineBreak();
 				return false;
 			}
-
 		} else {
-			System.out.println("RegNumber Already Exist");
+			System.out.println("ParkingSlots are not allocated ");
 			lineBreak();
 			return false;
 		}
+
 	}
 
 	private CarParking setCarParking(String regNumber, String colour, int index) {
@@ -64,20 +71,35 @@ public class VehicleServiceImpl implements VehicleService {
 	}
 
 	public boolean leave(int index) {
-		slotArray[index - 1] = null;
-		System.out.println("Slot number " + (index) + " is free");
-		lineBreak();
-		return true;
+		if (slotArray != null && index < slotArray.length) {
+			slotArray[index - 1] = null;
+			System.out.println("Slot number " + (index) + " is free");
+			lineBreak();
+			return true;
+		} else {
+			System.out.println("ParkingSlots are not allocated this Index");
+			return false;
+		}
+
 	}
 
 	public List<CarParking> status() {
 		System.out.println("Slot No.     " + "Registration No   " + "Colour");
-		List<CarParking> listObj = findAll();
-		for (CarParking car : listObj) {
-			System.out.print(car.getSlotId() + 1 + "\t");
-			System.out.print(car.getVehicle().getRegNumber() + "\t");
-			System.out.print(car.getVehicle().getColour());
-			lineBreak();
+		List<CarParking> listObj = null;
+		if (slotArray != null) {
+			listObj = findAll();
+			if (listObj != null) {
+				for (CarParking car : listObj) {
+					System.out.print(car.getSlotId() + 1 + "\t \t");
+					System.out.print(car.getVehicle().getRegNumber() + "\t \t");
+					System.out.print(car.getVehicle().getColour());
+					lineBreak();
+				}
+			} else {
+				System.out.println("Data Not Found!");
+			}
+		} else {
+			System.out.println("ParkingSlots are not allocated ");
 		}
 		lineBreak();
 		return listObj;
@@ -85,30 +107,43 @@ public class VehicleServiceImpl implements VehicleService {
 
 	public String findRegNumbersSlots(String colour, String type) {
 		String print = "";
-		List<CarParking> list = findByColour(colour);
-		for (CarParking car : list) {
-			if (type.equalsIgnoreCase(SlotEnumFields.REGISTRATION.getStatus()))
-				print += car.getVehicle().getRegNumber() + ",";
-			else if (type.equalsIgnoreCase(SlotEnumFields.SLOT.getStatus()))
-				print += (car.getSlotId() + 1) + ",";
+		if (slotArray != null) {
+			List<CarParking> list = findByColour(colour);
+			if (list != null) {
+				for (CarParking car : list) {
+					if (type.equalsIgnoreCase(SlotEnumFields.REGISTRATION.getStatus()))
+						print += car.getVehicle().getRegNumber() + ",";
+					else if (type.equalsIgnoreCase(SlotEnumFields.SLOT.getStatus()))
+						print += (car.getSlotId() + 1) + ",";
+				}
+			} else {
+				System.out.println(colour + " not found for this " + type);
+			}
+			System.out
+					.println(!print.equals("") ? print = print.substring(0, print.length() - 1) : "Colour Not Found!");
+		} else {
+			System.out.println("ParkingSlots are not allocated ");
 		}
-		System.out.println(!print.equals("") ? print=print.substring(0, print.length() - 1) : "Colour Not Found!");
 		lineBreak();
 		return print;
 	}
 
 	public int findSlot(String regNumber) {
-		List<CarParking> list = findByRegNumber(regNumber);
-		if (!list.isEmpty()) {
-			System.out.println(list.get(0).getSlotId() + 1);
-			lineBreak();
-			return list.get(0).getSlotId() + 1;
+		if (slotArray != null) {
+			List<CarParking> list = findByRegNumber(regNumber);
+			if (!list.isEmpty()) {
+				System.out.println(list.get(0).getSlotId() + 1);
+				lineBreak();
+				return list.get(0).getSlotId() + 1;
+			} else {
+				System.out.println(regNumber + " not found");
+				lineBreak();
+				return 0;
+			}
 		} else {
-			System.out.println("Not Found");
-			lineBreak();
+			System.out.println("ParkingSlots are not allocated ");
 			return 0;
 		}
-
 	}
 
 	private List<CarParking> findAll() {

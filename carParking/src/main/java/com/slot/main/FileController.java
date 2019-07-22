@@ -6,12 +6,12 @@ import java.io.IOException;
 
 import com.slot.service.VehicleService;
 import com.slot.serviceImpl.VehicleServiceImpl;
-import com.slot.util.SlotEnumFields;
+import com.slot.util.EnumFields;
 
-public class FileController {
+public class FileController extends EnumFields {
+
 	public static void main(String[] args) throws IOException {
-
-		FileReader fr = new FileReader(SlotEnumFields.PATH.getStatus());
+		FileReader fr = new FileReader(args[0]);
 		BufferedReader br = new BufferedReader(fr);
 
 		String data = "";
@@ -23,7 +23,7 @@ public class FileController {
 
 		while ((data = br.readLine()) != null) { // add this slots
 			String[] parkData = data.split(" ");
-			if (parkData[0].contains(SlotEnumFields.PARK.getStatus())) {
+			if (parkData[0].contains(PARK)) {
 				obj.park(parkData[1], parkData[2]);
 			} else {
 				break;
@@ -36,13 +36,13 @@ public class FileController {
 
 		data = br.readLine();
 
-		if (data.equalsIgnoreCase(SlotEnumFields.STATUS.getStatus())) {
+		if (data.equalsIgnoreCase(STATUS)) {
 			obj.status();
 		}
 
 		data = br.readLine();
 		String[] updateSlot1 = data.split(" ");
-		if (updateSlot1[0].contains(SlotEnumFields.PARK.getStatus())) {
+		if (updateSlot1[0].contains(PARK)) {
 			obj.park(updateSlot1[1], updateSlot1[2]);
 		} else {
 			System.out.println("Wrong Input!");
@@ -50,7 +50,7 @@ public class FileController {
 
 		data = br.readLine();
 		String[] updateSlot2 = data.split(" ");
-		if (updateSlot2[0].contains(SlotEnumFields.PARK.getStatus())) {
+		if (updateSlot2[0].contains(PARK)) {
 			obj.park(updateSlot2[1], updateSlot2[2]);
 		} else {
 			System.out.println("Wrong Input!");
@@ -58,11 +58,11 @@ public class FileController {
 
 		data = br.readLine();
 		String[] regSlot1 = data.split(" ");
-		obj.findRegNumbersSlots(regSlot1[1], SlotEnumFields.REGISTRATION.getStatus());
+		obj.findRegNumbersSlots(regSlot1[1], REGISTRATION);
 
 		data = br.readLine();
 		String[] regSlot2 = data.split(" ");
-		obj.findRegNumbersSlots(regSlot2[1], SlotEnumFields.SLOT.getStatus());
+		obj.findRegNumbersSlots(regSlot2[1], SLOT);
 
 		data = br.readLine();
 		String[] slotSplit1 = data.split(" ");

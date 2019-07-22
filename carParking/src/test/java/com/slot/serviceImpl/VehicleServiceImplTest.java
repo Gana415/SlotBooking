@@ -1,11 +1,16 @@
 package com.slot.serviceImpl;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import com.slot.service.VehicleService;
 import com.slot.util.SlotEnumFields;
 
-public class TestVehicleServiceImpl {
+public class VehicleServiceImplTest {
 
 	static VehicleService vehicleService;
 
@@ -16,42 +21,53 @@ public class TestVehicleServiceImpl {
 
 	@Test
 	public void testcreateParkingSlot() {
-		vehicleService.createParkingSlot(6);
+		assertEquals(6, vehicleService.createParkingSlot(6));
 	}
 
 	@Test
 	public void testpark() {
-		testcreateParkingSlot();
-		vehicleService.park("KA�01�HH�1234", "White");
-		vehicleService.park("KA�01�HH�9999", "White");
-		vehicleService.park("KA�01�BB�0001", "Black");
-		vehicleService.park("KA�01�HH�7777", "Red");
-		vehicleService.park("KA�01�HH�2701", "Blue");
-		vehicleService.park("KA�01�HH�3141", "Black");
+
+		vehicleService.createParkingSlot(6);
+		assertTrue(vehicleService.park("KA­01­HH­1234", "White"));
+		assertTrue(vehicleService.park("KA­01­HH­9999", "White"));
+		assertTrue(vehicleService.park("KA­01­BB­0001", "Black"));
+		assertTrue(vehicleService.park("KA­01­HH­7777", "Red"));
+		assertTrue(vehicleService.park("KA­01­HH­2701", "Blue"));
+		assertTrue(vehicleService.park("KA­01­HH­3141", "Black"));
 	}
 
 	@Test
 	public void testleave() {
-		testpark();
-		vehicleService.leave(1);
+		vehicleService.createParkingSlot(2);
+		vehicleService.park("KA­01­HH­1234", "White");
+		vehicleService.park("KA­01­BB­0001", "Black");
+		assertTrue(vehicleService.leave(1));
 	}
 
 	@Test
 	public void teststatus() {
-		testpark();
-		vehicleService.status();
+		vehicleService.createParkingSlot(2);
+		vehicleService.park("KA­01­HH­1234", "White");
+		vehicleService.park("KA­01­BB­0001", "Black");
+		assertNotNull(vehicleService.status());
 	}
 
 	@Test
 	public void testFindRegNumbersSlots() {
-		testpark();
-		vehicleService.findRegNumbersSlots("White", SlotEnumFields.REGISTRATION.getStatus());
+		vehicleService.createParkingSlot(2);
+		vehicleService.park("KA­01­HH­1234", "White");
+		vehicleService.park("KA­01­BB­0001", "Black");
+		assertEquals("KA­01­HH­1234",
+				vehicleService.findRegNumbersSlots("White", SlotEnumFields.REGISTRATION.getStatus()));
+		assertEquals("2", vehicleService.findRegNumbersSlots("Black", SlotEnumFields.SLOT.getStatus()));
 	}
 
 	@Test
 	public void testFindSlot() {
-		testpark();
-		vehicleService.findRegNumbersSlots("White", SlotEnumFields.SLOT.getStatus());
+		vehicleService.createParkingSlot(2);
+		vehicleService.park("KA­01­HH­1234", "White");
+		vehicleService.park("KA­01­BB­0001", "Black");
+		assertEquals(1, vehicleService.findSlot("KA­01­HH­1234"));
 	}
 
 }

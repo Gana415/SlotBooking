@@ -1,90 +1,69 @@
 package com.slot.main;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 import com.slot.service.VehicleService;
 import com.slot.serviceImpl.VehicleServiceImpl;
-import com.slot.util.SlotEnumFields;
+import com.slot.util.EnumFields;
 
-public class CmdController {
+public class CmdController extends EnumFields {
 	static Scanner slotsObj = new Scanner(System.in);
+	static Map<String, String> map = new TreeMap<String, String>();
 
-	public static void main(String[] args) throws IOException {
+	public static void createMapInput() {
+		map.put(CREATEPARKINGSLOTS, "<number>");
+		map.put(PARK, "<registerNumber> <colour>");
+		map.put(LEAVE, "<number>");
+		map.put(STATUS, "<>");
+		map.put(REG_COLOUR, "<colour>");
+		map.put(SLOT_COLOUR, "<colour>");
+		map.put(SLOT_REGISTRATION, "<registrationNumber>");
+		map.put(EXIT, "<>");
+	}
 
+	public static void main(String[] args) {
+
+		createMapInput();
+		System.out.println("Please give the inputs below format\n");
+		map.forEach((k, v) -> System.out.println("\t " + k + " " + v));
 		VehicleService obj = new VehicleServiceImpl();
-
-		System.out.println("Please enter Number of Slots");
-		int slots = Integer.parseInt(callNewInput());
-		obj.createParkingSlot(slots);
-		System.out.println("Created a parking lot with " + slots + " slots");
-		System.out.println();
-		Map<Integer, Map<String, String>> slotMap = new HashMap<Integer, Map<String, String>>();
-
-		for (int i = 0; i < slots; i++) {
-			System.out.println("Adding your slot");
-			String newSlot = callNewInput();
-			System.out.println("You typed: " + newSlot);
-
-			String[] parkData = newSlot.split(" ");
-			if (parkData[0].contains(SlotEnumFields.PARK.getStatus())) {
-				obj.park(parkData[1], parkData[2]);
+		while (true) {
+			String data = callNewInput();
+			String[] splitData = data.split(" ");
+			if (splitData.length > 1) {
+				switch (splitData[0]) {
+				case CREATEPARKINGSLOTS:
+					obj.createParkingSlot(Integer.parseInt(splitData[1]));
+					break;
+				case PARK:
+					obj.park(splitData[1], splitData[2]);
+					break;
+				case LEAVE:
+					obj.leave(Integer.parseInt(splitData[1]));
+					break;
+				case REG_COLOUR:
+					obj.findRegNumbersSlots(splitData[1], "registration");
+					break;
+				case SLOT_COLOUR:
+					obj.findRegNumbersSlots(splitData[1], "slot");
+					break;
+				case SLOT_REGISTRATION:
+					obj.findSlot(splitData[1]);
+					break;
+				case EXIT:
+					System.exit(0);
+					break;
+				default:
+					System.out.println("Wrong Input Please Try Again");
+				}
 			} else {
-				System.out.println("Wrong Input Please Try Again!");
-				System.exit(0);
-				break;
+				if (STATUS.equals(data)) {
+					obj.status();
+				}
 			}
-
 		}
-		String data = "";
-		System.out.print(SlotEnumFields.LEAVE.getStatus() + " ");
-
-		obj.leave(Integer.parseInt(callNewInput()));
-
-		System.out.println("Print status of List:");
-		data = callNewInput();
-		if (data.equalsIgnoreCase(SlotEnumFields.STATUS.getStatus())) {
-			obj.status();
-		}
-
-		System.out.println("Update new Regester Number");
-		data = callNewInput();
-		String[] updateSlot1 = data.split(" ");
-		if (updateSlot1[0].contains(SlotEnumFields.PARK.getStatus())) {
-			obj.park(updateSlot1[1], updateSlot1[2]);
-		} else {
-			System.out.println("Wrong Input!");
-		}
-
-		System.out.println("Update new Regester Number");
-		data = callNewInput();
-		String[] updateSlot2 = data.split(" ");
-		if (updateSlot2[0].contains(SlotEnumFields.PARK.getStatus())) {
-			obj.park(updateSlot2[1], updateSlot2[2]);
-		} else {
-			System.out.println("Wrong Input!");
-		}
-
-		System.out.println("Enter registration_numbers Color Name ");
-		data = callNewInput();
-		String[] regSlot1 = data.split(" ");
-		obj.findRegNumbersSlots(regSlot1[1], "registration");
-
-		System.out.println("Enter slot_numbers_for_cars Color Name ");
-		data = callNewInput();
-		String[] regSlot2 = data.split(" ");
-		obj.findRegNumbersSlots(regSlot2[1], "slot");
-
-		System.out.println("Enter Regester Number ");
-		data = callNewInput();
-		String[] slotSplit1 = data.split(" ");
-		obj.findSlot(slotSplit1[1]);
-		System.out.println("Enter Regester Number ");
-		data = callNewInput();
-		String[] slotSplit2 = data.split(" ");
-		obj.findSlot(slotSplit2[1]);
 	}
 
 	public static String callNewInput() {
